@@ -1,0 +1,28 @@
+# --- FastAPI Core ---
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+
+# --- Rasa Client (for calling Rasa server APIs) ---
+httpx==0.27.0  # Better async HTTP client than requests
+requests==2.31.0
+
+# --- Databases ---
+motor==3.3.2               # Async MongoDB client
+psycopg2-binary==2.9.9     # PostgreSQL adapter
+redis==5.0.3               # Redis client
+
+# --- Data validation & utilities ---
+pydantic==1.10.13          # For data models (FastAPI uses it)
+python-dotenv==1.0.1       # For .env file support
+
+# --- Cross-Origin Resource Sharing (CORS) ---
+fastapi[all]               # Installs starlette CORS middleware
+
+# --- Optional ---
+fuzzywuzzy==0.18.0         # If using fuzzy matching for job roles or locations
+python-Levenshtein==0.23.0 # Needed for fuzzywuzzy speed-up
+
+# --- Rasa Core Dependencies (only if training or running rasa directly in Python) ---
+redis           # Optional: if you're running Rasa NLU locally from the same backend
+
+# Note: You only need Rasa installed here if you're not using a separate deployed Rasa server.

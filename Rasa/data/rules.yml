@@ -1,0 +1,56 @@
+version: "3.1"
+
+rules:
+  - rule: Activate job search form
+    steps:
+      - intent: job_search
+      - action: job_search_form
+      - active_loop: job_search_form
+
+  - rule: Submit job search form
+    condition:
+      - active_loop: job_search_form
+    steps:
+      - action: job_search_form
+      - active_loop: null
+      - action: action_search_jobs
+
+  - rule: Respond to greeting
+    steps:
+      - intent: greet
+      - action: utter_greet
+
+  - rule: Activate mentorship form
+    steps:
+      - intent: mentorship
+      - action: get_mentorship_form
+      - active_loop: get_mentorship_form
+
+  - rule: Submit mentorship form
+    condition:
+      - active_loop: get_mentorship_form
+    steps:
+      - action: get_mentorship_form
+      - active_loop: null
+      - action: action_connect_mentorship
+
+  - rule: Respond to bot introduction
+    steps:
+      - intent: bot_introduction
+      - action: utter_bot_introduction
+
+  - rule: Handle fallback
+    steps:
+      - intent: fallback
+      - action: utter_fallback
+
+
+
+  - rule: Trigger resume form in frontend
+    steps:
+      - intent: build_resume
+      - action: action_trigger_resume_form
+
+
+
+

@@ -1,0 +1,55 @@
+# mongodb_client.py
+from pymongo import MongoClient
+from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Connect to MongoDB
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+client = MongoClient(MONGO_URI)
+
+# Access DB and collection
+db = client["asha_ai_chatbot_db"]
+chat_collection = db["chat_session"]
+
+# Create indexes for performance and TTL
+chat_collection.create_index([("user_id", 1), ("timestamp", -1)])
+chat_collection.create_index("timestamp", expireAfterSeconds=2592000)  # 30 days
+chat_collection.create_index("session_id")  # Index for efficient session grouping
+
+# Store chat in MongoDB with separate session_id
+def save_chat_to_mongodb(session_id: str, user_id: str, user_message: str, bot_response: str, intent: str = None, entities: dict = None):
+    chat_document = {
+        "session_id": session_id,
+        "user_id": user_id,
+        "timestamp": datetime.utcnow(),
+        "user_message": user_message,
+        "bot_response": bot_response,
+        "intent": intent,
+        "entities": entities or {}
+    }
+    chat_collection.insert_one(chat_document)
+
+# Retrieve chat history for a user (grouped by session_id optionally)
+def get_user_chat_history(user_id: str):
+    return list(chat_collection.find({"user_id": user_id}).sort("timestamp", -1))
+
+# Optional: expose collection object
+def get_chat_collection():
+    return chat_collection
+
+def get_chat_by_session_id(session_id: str):
+    from pymongo import MongoClient
+    from bson import ObjectId
+    import os
+
+    client = MongoClient(os.getenv("MONGO_URI"))
+    db = client.asha_ai_chatbot_db
+    collection = db.chat_session
+
+    chat = list(collection.find({"session_id": session_id}))
+    return chat if chat else None
+

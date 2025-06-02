@@ -1,0 +1,48 @@
+{
+  "life coach": [
+    "https://mentorkart.com/life-coach-mentors",
+    "https://www.coach.me"
+  ],
+  "data science": [
+    "https://mentorkart.com/data-science-mentors",
+    "https://growthschool.io/mentors/data-science"
+  ],
+  "career": [
+    "https://mentorkart.com/Get-Mentor",
+    "https://www.careermentor.com"
+  ],
+  "public speaking": [
+    "https://mentorkart.com/public-speaking",
+    "https://www.speakingmentors.com"
+  ],
+  "entrepreneurship": [
+    "https://mentorkart.com/startup-mentors",
+    "https://www.entrepreneurmentor.com"
+  ],
+  "ai": [
+    "https://mentorkart.com/ai-mentors",
+    "https://www.ai-mentor.com"
+  ],
+  "design": [
+    "https://mentorkart.com/design-mentors",
+    "https://www.designmentor.com"
+  ],
+  "finance": [
+    "https://mentorkart.com/finance-mentors",
+    "https://www.financialmentor.com"
+  ],
+  "mental health": [
+    "https://mentorkart.com/mental-health-mentors",
+
+    "https://www.mentalhealthmentor.com"
+  ],
+  "startup": [
+    "https://mentorkart.com/startup-mentors",
+    "https://www.startupmentor.com"
+  ],
+  "default": [
+    "https://mentorkart.com/Get-Mentor",
+    "https://www.mentorconnect.com"
+  ]
+}
+

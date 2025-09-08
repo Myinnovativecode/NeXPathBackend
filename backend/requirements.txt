@@ -12,12 +12,14 @@ psycopg2-binary==2.9.9     # PostgreSQL adapter
 redis==5.0.3               # Redis client
 
 # --- Data validation & config ---
-pydantic==1.10.13
+pydantic==2.9.2
+pydantic-settings==2.5.2   # replacement for Pydantic v2 BaseSettings
 python-dotenv==1.0.1
 
 # --- Optional for fuzzy matching / string similarity ---
 fuzzywuzzy==0.18.0
 python-Levenshtein==0.23.0
+
 
 
 

@@ -2,18 +2,12 @@ services:
   - type: web
     name: nexpath-backend
     env: python
+    pythonVersion: 3.11   # recommended stable version
     buildCommand: pip install -r backend/requirements.txt
-    startCommand: ./backend/start.sh
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
     envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: nexpath-db
-          property: connectionString
-      - key: MONGODB_URI
-        sync: false
-      - key: REDIS_URL
+      - key: MONGO_URI      # 👈 matches your .env file
+        sync: false         # Render won't auto-manage it, you’ll set it in dashboard
+      - key: OTHER_API_URL  # 👈 for any other API URLs you have in your backend
         sync: false
 
-databases:
-  - name: nexpath-db
-    plan: free

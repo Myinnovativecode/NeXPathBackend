@@ -24,6 +24,8 @@ celery==5.4.0
 twilio
 sendgrid==6.10.0
 reportlab==4.2.2
+sqlalchemy
+asyncpg
 
 
 

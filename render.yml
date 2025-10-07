@@ -2,12 +2,16 @@ services:
   - type: web
     name: nexpath-backend
     env: python
-    pythonVersion: 3.11.10   # recommended stable version
+    pythonVersion: 3.11.10
     buildCommand: pip install -r backend/requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+    startCommand: gunicorn -k uvicorn.workers.UvicornWorker backend.main:app
     envVars:
-      - key: MONGO_URI      # 👈 matches your .env file
-        sync: false         # Render won't auto-manage it, you’ll set it in dashboard
-      - key: OTHER_API_URL  # 👈 for any other API URLs you have in your backend
+      - key: MONGO_URI
+        sync: false
+      - key: POSTGRES_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: OTHER_API_URL
         sync: false
 

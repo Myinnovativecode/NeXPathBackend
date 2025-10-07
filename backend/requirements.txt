@@ -23,6 +23,9 @@ rapidfuzz==3.14.0
 celery==5.4.0
 twilio
 sendgrid==6.10.0
+reportlab==4.2.2
+
+
 
 
 

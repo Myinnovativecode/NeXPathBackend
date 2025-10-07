@@ -21,6 +21,8 @@ python-dotenv==1.0.1
 fuzzywuzzy==0.18.0
 rapidfuzz==3.14.0
 celery==5.4.0
+twilio
+
 
 
 

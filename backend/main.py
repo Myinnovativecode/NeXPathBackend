@@ -51,7 +51,7 @@ GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0
 
 # Initialize FastAPI app
 app = FastAPI()
-app.include_router(resume_router)  # Make sure this router is defined and imported correctly
+app.include_router(resume_router)
 app.include_router(user_router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

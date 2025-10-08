@@ -4,11 +4,17 @@ services:
     runtime: python
     pythonVersion: "3.11.10"  # Keep quotes
     buildCommand: |
-      python3.11 -m venv .venv
-      source .venv/bin/activate
-      pip install --upgrade pip
-      pip install -r backend/requirements.txt
-    startCommand: python3.11 -m gunicorn -k uvicorn.workers.UvicornWorker backend.main:app
+      # Remove potentially conflicting files or old venvs
+      rm -rf .venv
+      mkdir -p backend/install
+
+      # Create venv using the desired python version
+      python3.11 -m venv .venv 
+
+      # Use the pip executable *inside* the new venv
+      ./.venv/bin/pip install --upgrade pip
+      ./.venv/bin/pip install -r backend/requirements.txt
+    startCommand: ./.venv/bin/gunicorn -k uvicorn.workers.UvicornWorker backend.main:app
 
     envVars:
       - key: MONGO_URI

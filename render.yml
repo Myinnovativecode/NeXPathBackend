@@ -1,10 +1,13 @@
 services:
   - type: web
     name: nexpath-backend
-    env: python
-    pythonVersion: 3.11.10
-    buildCommand: pip install -r backend/requirements.txt
+    runtime: python
+    pythonVersion: "3.11.10"  # Keep quotes
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r backend/requirements.txt
     startCommand: gunicorn -k uvicorn.workers.UvicornWorker backend.main:app
+
     envVars:
       - key: MONGO_URI
         sync: false

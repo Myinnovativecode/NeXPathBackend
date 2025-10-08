@@ -2,19 +2,21 @@ services:
   - type: web
     name: nexpath-backend
     runtime: python
-    pythonVersion: "3.11.10"  # Keep quotes
+    pythonVersion: "3.11.10"
+
     buildCommand: |
-      # Remove potentially conflicting files or old venvs
-      rm -rf .venv
-      mkdir -p backend/install
+      # 1. Ensure Python 3.11 is what we think it is
+      which python3.11
+      python3.11 --version
+      
+      # 2. Use the python3.11 installation directly to install dependencies
+      # We skip venv creation/activation to force the use of the 3.11 environment
+      /usr/bin/python3.11 -m pip install --upgrade pip
+      /usr/bin/python3.11 -m pip install -r backend/requirements.txt
 
-      # Create venv using the desired python version
-      python3.11 -m venv .venv 
+    # 3. Use the gunicorn installed *via* python3.11 using 'python -m' syntax
+    startCommand: python3.11 -m gunicorn -k uvicorn.workers.UvicornWorker backend.main:app
 
-      # Use the pip executable *inside* the new venv
-      ./.venv/bin/pip install --upgrade pip
-      ./.venv/bin/pip install -r backend/requirements.txt
-    startCommand: ./.venv/bin/gunicorn -k uvicorn.workers.UvicornWorker backend.main:app
 
     envVars:
       - key: MONGO_URI

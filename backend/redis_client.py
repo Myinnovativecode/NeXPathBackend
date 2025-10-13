@@ -1,14 +1,46 @@
 import redis
+import os
+from dotenv import load_dotenv
+import logging
 
-# Connect to Redis
-redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+load_dotenv()
 
-# Optional: test connection
+logger = logging.getLogger(__name__)
+
+# Get Redis URL from environment
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
+redis_client = None
+
 try:
+    # Render Redis uses TLS (rediss://), local dev uses redis://
+    if REDIS_URL.startswith("rediss://"):
+        redis_client = redis.from_url(
+            REDIS_URL,
+            decode_responses=True,
+            ssl_cert_reqs=None,  # Required for Render Redis
+            socket_connect_timeout=5,
+            socket_keepalive=True
+        )
+    else:
+        # Local development
+        redis_client = redis.from_url(
+            REDIS_URL,
+            decode_responses=True
+        )
+
+    # Test connection
     redis_client.ping()
-    print(" Connected to Redis!")
-except redis.ConnectionError:
-    print(" Redis connection failed.")
+    logger.info("✅ Connected to Redis!")
+    print("✅ Connected to Redis!")
+except redis.ConnectionError as e:
+    logger.error(f"❌ Redis connection failed: {e}")
+    print(f"❌ Redis connection failed: {e}")
+    redis_client = None
+except Exception as e:
+    logger.error(f"❌ Unexpected Redis error: {e}")
+    print(f"❌ Unexpected Redis error: {e}")
+    redis_client = None
 
 
 # Store user conversation
@@ -19,8 +51,13 @@ def store_user_conversation(sender_id, message):
     :param sender_id: Unique ID for the user (session)
     :param message: The user's message to store
     """
-    # Push the message to a list specific to the user
-    redis_client.rpush(f"user:{sender_id}:messages", message)
+    if redis_client:
+        try:
+            redis_client.rpush(f"user:{sender_id}:messages", message)
+        except Exception as e:
+            logger.error(f"Error storing conversation: {e}")
+    else:
+        logger.warning("Redis not available, conversation not stored")
 
 
 # Get user conversation history
@@ -31,7 +68,15 @@ def get_user_conversation(sender_id):
     :param sender_id: Unique ID for the user (session)
     :return: List of messages (user's conversation history)
     """
-    return redis_client.lrange(f"user:{sender_id}:messages", 0, -1)
+    if redis_client:
+        try:
+            return redis_client.lrange(f"user:{sender_id}:messages", 0, -1)
+        except Exception as e:
+            logger.error(f"Error retrieving conversation: {e}")
+            return []
+    else:
+        logger.warning("Redis not available, returning empty conversation")
+        return []
 
 
 # Store the last message
@@ -42,7 +87,13 @@ def store_last_message(sender_id, message):
     :param sender_id: Unique ID for the user (session)
     :param message: The user's last message to store
     """
-    redis_client.set(f"user:{sender_id}:last_message", message)
+    if redis_client:
+        try:
+            redis_client.set(f"user:{sender_id}:last_message", message)
+        except Exception as e:
+            logger.error(f"Error storing last message: {e}")
+    else:
+        logger.warning("Redis not available, last message not stored")
 
 
 # Get the last message
@@ -53,4 +104,12 @@ def get_last_message(sender_id):
     :param sender_id: Unique ID for the user (session)
     :return: The last message sent by the user
     """
-    return redis_client.get(f"user:{sender_id}:last_message")
+    if redis_client:
+        try:
+            return redis_client.get(f"user:{sender_id}:last_message")
+        except Exception as e:
+            logger.error(f"Error retrieving last message: {e}")
+            return None
+    else:
+        logger.warning("Redis not available, returning None")
+        return None

@@ -10,8 +10,9 @@ requests==2.31.0
 
 # --- Databases ---
 motor==3.3.2
-psycopg[binary]==3.2.1
+psycopg[binary]>=3.2.2  # Changed from ==3.2.1 to >=3.2.2
 redis==5.0.3
+asyncpg==0.30.0
 
 # --- Data validation & config ---
 pydantic==2.9.2
@@ -22,11 +23,10 @@ python-dotenv==1.0.1
 fuzzywuzzy==0.18.0
 rapidfuzz==3.14.0
 celery==5.4.0
-twilio
+twilio==9.8.3  # Pin version to avoid issues
 sendgrid==6.10.0
 reportlab==4.2.2
-asyncpg
-scikit-learn
+scikit-learn==1.7.2  # Pin version
 
 
 

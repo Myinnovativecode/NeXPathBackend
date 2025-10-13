@@ -10,7 +10,7 @@ url = os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL")
 if not url:
     raise RuntimeError("DATABASE_URL is not set")
 
-# Normalize for SQLAlchemy + psycopg3
+# Normalize for psycopg v3
 if url.startswith("postgres://"):
     url = url.replace("postgres://", "postgresql+psycopg://", 1)
 elif url.startswith("postgresql://"):

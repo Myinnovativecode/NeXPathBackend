@@ -6,20 +6,17 @@ from postgres_models import Base, UserProfile, Interview
 
 load_dotenv()
 
-# Prefer Render-provided DATABASE_URL, fall back to POSTGRES_URL if present
 url = os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL")
 if not url:
-    raise RuntimeError("DATABASE_URL (or POSTGRES_URL) is not set")
+    raise RuntimeError("DATABASE_URL is not set")
 
-# Normalize scheme: Render often uses 'postgres://', but SQLAlchemy prefers 'postgresql://'
+# Normalize for SQLAlchemy + psycopg3
 if url.startswith("postgres://"):
-    url = url.replace("postgres://", "postgresql://", 1)
+    url = url.replace("postgres://", "postgresql+psycopg://", 1)
+elif url.startswith("postgresql://"):
+    url = url.replace("postgresql://", "postgresql+psycopg://", 1)
 
-# If you stay on psycopg2, you can leave it as postgresql://
-# If you move to psycopg v3, use 'postgresql+psycopg://'
-# For Python 3.11 + psycopg2-binary 2.9.9, this is fine:
 engine = create_engine(url, pool_pre_ping=True)
-
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base.metadata.create_all(bind=engine)
 

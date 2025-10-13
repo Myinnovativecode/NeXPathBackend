@@ -55,10 +55,15 @@ app.include_router(resume_router)
 app.include_router(user_router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+origins = [
+    "https://nexpath.vercel.app/",  # replace with your actual Vercel domain
+    "http://localhost:5173",             # dev
+]
+
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

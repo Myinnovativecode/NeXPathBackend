@@ -1,4 +1,6 @@
+import os
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "https://nexpathbackend-1.onrender.com")
+
 from datetime import datetime , timedelta
 from typing import Optional, List, Dict, Any
 import random
@@ -6,7 +8,7 @@ import uuid
 import json
 import re
 from pathlib import Path
-import os
+
 from tasks import analyze_interview ,initiate_interview_call
 from fastapi import Request
 from reportlab.lib.pagesizes import letter

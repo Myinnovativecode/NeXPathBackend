@@ -59,15 +59,15 @@ app.include_router(user_router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # main.py (near the top, right after app = FastAPI())
+# main.py (near the top, right after app = FastAPI())
 from fastapi.middleware.cors import CORSMiddleware
-import os
 
-# Set your production frontend domain (or via Render env var FRONTEND_URL)
-FRONTEND_URL = os.getenv("FRONTEND_URL", "https://nexpath.vercel.app")
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://nexpath.vercel.app")  # your production domain
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL],                 # exact prod domain
+    allow_origins=[FRONTEND_URL],                 # exact prod origin
     allow_origin_regex=r"^https://.*\.vercel\.app$",  # preview deployments
     allow_credentials=True,
     allow_methods=["*"],
@@ -75,22 +75,7 @@ app.add_middleware(
     expose_headers=["*"],
 )
 
-# origins = [
-#     "https://nexpathbackend.vercel.app",     # ✅ Your production Vercel domain
-#     "https://*.vercel.app",                   # ✅ All Vercel preview deployments
-#     "http://localhost:3000",                  # Local dev (React default)
-#     "http://localhost:5173",                  # Local dev (Vite default)
-#     "http://localhost:8080",                  # Local dev (alternative)
-# ]
-#
-# # CORS Configuration
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+
 
 # Load mentorship links
 mentor_links_path = Path(__file__).parent / "mentor_links.json"

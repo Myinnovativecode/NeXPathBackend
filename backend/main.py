@@ -1,3 +1,4 @@
+BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "https://nexpathbackend-1.onrender.com")
 from datetime import datetime , timedelta
 from typing import Optional, List, Dict, Any
 import random
@@ -55,22 +56,39 @@ app.include_router(resume_router)
 app.include_router(user_router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-origins = [
-    "https://nexpathbackend.vercel.app",     # ✅ Your production Vercel domain
-    "https://*.vercel.app",                   # ✅ All Vercel preview deployments
-    "http://localhost:3000",                  # Local dev (React default)
-    "http://localhost:5173",                  # Local dev (Vite default)
-    "http://localhost:8080",                  # Local dev (alternative)
-]
+# main.py (near the top, right after app = FastAPI())
+from fastapi.middleware.cors import CORSMiddleware
+import os
 
-# CORS Configuration
+# Set your production frontend domain (or via Render env var FRONTEND_URL)
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://nexpath.vercel.app")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[FRONTEND_URL],                 # exact prod domain
+    allow_origin_regex=r"^https://.*\.vercel\.app$",  # preview deployments
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
+
+# origins = [
+#     "https://nexpathbackend.vercel.app",     # ✅ Your production Vercel domain
+#     "https://*.vercel.app",                   # ✅ All Vercel preview deployments
+#     "http://localhost:3000",                  # Local dev (React default)
+#     "http://localhost:5173",                  # Local dev (Vite default)
+#     "http://localhost:8080",                  # Local dev (alternative)
+# ]
+#
+# # CORS Configuration
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 # Load mentorship links
 mentor_links_path = Path(__file__).parent / "mentor_links.json"
@@ -940,21 +958,17 @@ def get_user_dashboard(
 
 
 def generate_default_download_url(resume_id: int) -> str:
-    """
-    Generate a default download URL if none exists
-    This could be a method to regenerate the resume PDF or provide a fallback
-    """
     os.makedirs("static/resumes", exist_ok=True)
     default_filepath = f"static/resumes/resume_{resume_id}_default.pdf"
-
-    # If file doesn't exist, create a placeholder
     if not os.path.exists(default_filepath):
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.pagesizes import letter
         c = canvas.Canvas(default_filepath, pagesize=letter)
         c.setFont("Helvetica", 12)
         c.drawString(100, 750, f"Resume {resume_id} - Placeholder")
         c.save()
 
-    return f"http://localhost:8000/static/resumes/resume_{resume_id}_default.pdf"
+    return f"{BACKEND_BASE_URL}/static/resumes/resume_{resume_id}_default.pdf"
 
 
 @app.get("/debug/saved-jobs/{user_id}")

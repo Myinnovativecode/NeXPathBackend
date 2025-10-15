@@ -1,6 +1,4 @@
 import os
-BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "https://nexpathbackend-1.onrender.com")
-
 from datetime import datetime , timedelta
 from typing import Optional, List, Dict, Any
 import random
@@ -62,7 +60,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # main.py (near the top, right after app = FastAPI())
 from fastapi.middleware.cors import CORSMiddleware
 
-
+BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "https://nexpathbackend-1.onrender.com")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "https://nexpath.vercel.app")  # your production domain
 
 app.add_middleware(
